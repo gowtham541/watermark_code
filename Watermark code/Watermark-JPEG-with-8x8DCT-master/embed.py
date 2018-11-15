@@ -95,10 +95,9 @@ def embed(srcs):
 	wmrgb=cv.cvtColor(finishwm.astype('uint8'),cv.COLOR_YUV2RGB) 	
 	#划线图
 	cv.imshow('wmblocks',cv.cvtColor(wmblocks.astype('uint8'),cv.COLOR_YUV2RGB) )
-	cv.waitKey(0)  
-	cv.destroyAllWindows()	
-	#图像保存的质量,要为100,默认为95
+	
 	for x in range(6):
+		print(x)
 		name="finishwm"+str(x)
 		filename=name+".jpg"
 		cv.imwrite(filename,wmrgb,[int(cv.IMWRITE_JPEG_QUALITY),100-x])
@@ -110,10 +109,7 @@ def embed(srcs):
 
 	print("countembed=",count)
 
-
 def main():
 	embed('fingerprint.jpg')
-	cv.waitKey(0)  
-	cv.destroyAllWindows()
 if __name__ == '__main__':
 	main()

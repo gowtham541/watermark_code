@@ -16,7 +16,5 @@ def main():
 	for x in range(6):
 		name=str(x)+"extractfinger"+".jpg"
 		print(x,"PSNR =",'%.3f'%psnr(src,name))
-	cv.waitKey(0)  
-	cv.destroyAllWindows()
 if __name__ == '__main__':
 	main()
