@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import math
 import walk	
-def embed(srcs):
+def embed(srcs,host_image):
 	#正方形水印图片-指纹
 	src=cv.imread(srcs)    
 	src=cv.bitwise_not(src)  
@@ -20,7 +20,7 @@ def embed(srcs):
 		[int(cv.IMWRITE_JPEG_QUALITY),100])
 
 	#宿主图片
-	host=cv.imread('host.jpg')  
+	host=cv.imread(host_image)  
 	#宿主图片YUV化
 	hostyuv=cv.cvtColor(host,cv.COLOR_RGB2YUV)  
 	#转成float32是DCT必要条件
@@ -108,8 +108,16 @@ def embed(srcs):
 		cv.imshow(name,img)
 
 	print("countembed=",count)
-
+from gooey import Gooey, GooeyParser
+import argparse
+@Gooey
 def main():
-	embed('fingerprint.jpg')
+	parser = argparse.ArgumentParser(description= 'Thủy vân ảnh màu bằng Python')
+	parser.add_argument('-f', '--watermark-image', default='fingerprint.jpg')
+	parser.add_argument('-b', '--host-image', default='host.jpg')
+	args = parser.parse_args()
+	watermark = args.watermark_image
+	host_image = args.host_image
+	embed(watermark,host_image)
 if __name__ == '__main__':
 	main()

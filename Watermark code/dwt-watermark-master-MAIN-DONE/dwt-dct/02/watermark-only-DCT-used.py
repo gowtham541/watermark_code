@@ -5,23 +5,13 @@ from PIL import Image
 from scipy.fftpack import dct
 from scipy.fftpack import idct
 
-current_path = str(os.path.dirname(__file__))  
 
-image = 'mis1.jpg'   
-watermark = 'qrcode.png' 
 
 def convert_image(image_name, size):
     img = Image.open(image_name).resize((size, size), 1)
     img = img.convert('L')
     img.save('./dataset/' + image_name)
-
-    # image_array = np.array(img)
-    # image_array = np.float32(image_array) 
-    # image_array /= 255 
     image_array = np.array(img.getdata(), dtype=np.float).reshape((size, size))
-    #print (image_array[0][0])               #qrcode white color = 1.0
-    #print (image_array[10][10])             #qrcode black color = 0.0  
-
     return image_array
     
 def embed_watermark(watermark_array, orig_image):
@@ -100,9 +90,19 @@ def print_image_from_array(image_array, name):
     img = Image.fromarray(image_array_copy)
     img.save('./result/' + name)
 
+   
 
-
-def w2d():
+from gooey import Gooey, GooeyParser
+import argparse
+@Gooey
+def main(): 
+    current_path = str(os.path.dirname(__file__))  
+    parser = argparse.ArgumentParser(description= 'Nguyễn Văn Trung- D9DTVT- Trường đại học Điện Lực')
+    parser.add_argument('-f', '--input-image', default='mis1.jpg' )
+    parser.add_argument('-b', '--watermark-value', default='qrcode.png')
+    args = parser.parse_args()
+    image =   args.input_image
+    watermark = args.watermark_value
     image_array = convert_image(image, 2048)
     watermark_array = convert_image(watermark, 256)
 
@@ -122,4 +122,4 @@ def w2d():
 
 # recover images
     recover_watermark(image_array = image_array_H)
-w2d()
+main()
