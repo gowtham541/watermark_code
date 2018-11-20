@@ -109,11 +109,12 @@ def embed(srcs,host_image):
 	# print("countembed=",count)
 from gooey import Gooey, GooeyParser
 import argparse
-@Gooey
+@Gooey(progress_regex=r"^progress: (?P<current>\d+)/(?P<total>\d+)$",
+       progress_expr="current / total * 100")
 def main():
-	parser = argparse.ArgumentParser(description= 'Thủy vân ảnh màu bằng Python')
-	parser.add_argument('-f', '--watermark-image', default='fingerprint.jpg')
-	parser.add_argument('-b', '--host-image', default='host.jpg')
+	parser = GooeyParser(description= 'Thủy vân ảnh số dựa trên kỹ thuật DCT - Nguyễn Văn Trung - D9DTVT')
+	parser.add_argument('-f', '--watermark-image',help= 'Thủy vân cần nhúng', default='fingerprint.jpg',widget='FileChooser')
+	parser.add_argument('-b', '--host-image',help='Ảnh gốc', default='host.jpg',widget='FileChooser')
 	args = parser.parse_args()
 	watermark = args.watermark_image
 	host_image = args.host_image
