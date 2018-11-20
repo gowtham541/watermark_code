@@ -37,7 +37,7 @@ def extract(src,dst):
 					j=0
 					i=i+1
 				count+=1
-	print("countextract=",count)
+	# print("countextract=",count)
 	cv.imwrite(dst,finishfinger,[int(cv.IMWRITE_JPEG_QUALITY),100])
 def main():
 	for x in range(6):

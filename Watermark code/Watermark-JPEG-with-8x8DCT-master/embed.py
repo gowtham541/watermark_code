@@ -41,7 +41,7 @@ def embed(srcs,host_image):
 	#r是每个8x8块要存的指纹像素点数目
 	# r=math.ceil(fingernum/(part8x8rownum*part8x8colnum))
 	r=math.ceil(fingernum/(part8x8rownum*part8x8colnum))
-	print("r=",r)
+	# print("r=",r)
 	#在8x8块的单位格子,分别与其中心的对称的单位格子,成一对
 	#每一对的大小关系(前者比后者大,前者比后者小)用来记录要存的指纹像素点的黑与白
 	#从中间往右上方走格子,为产生格子对做准备
@@ -97,7 +97,6 @@ def embed(srcs,host_image):
 	cv.imshow('wmblocks',cv.cvtColor(wmblocks.astype('uint8'),cv.COLOR_YUV2RGB) )
 	
 	for x in range(6):
-		print(x)
 		name="finishwm"+str(x)
 		filename=name+".jpg"
 		cv.imwrite(filename,wmrgb,[int(cv.IMWRITE_JPEG_QUALITY),100-x])
@@ -107,7 +106,7 @@ def embed(srcs,host_image):
 		cv.resizeWindow(name,k,int(k*img.shape[0]/img.shape[1]));
 		cv.imshow(name,img)
 
-	print("countembed=",count)
+	# print("countembed=",count)
 from gooey import Gooey, GooeyParser
 import argparse
 @Gooey
