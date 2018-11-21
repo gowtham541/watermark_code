@@ -3,43 +3,40 @@ import numpy as np
 import math
 import walk	
 def embed(srcs,host_image):
-	#正方形水印图片-指纹
+	#xử lý ảnh mờ thủy vân thành đen trắng
 	src=cv.imread(srcs)    
 	src=cv.bitwise_not(src)  
-	#水印图片灰度图
+	#chuyển ảnh thành rgb thành gray
 	graysrc=cv.cvtColor(src,cv.COLOR_BGR2GRAY)  
 	# cv.imshow('graysrc',graysrc)
-	#中值滤波
+	# Lọc trung bình
 	medianblurimg=cv.medianBlur(graysrc,3)
-	# cv.imshow('medianblurimg',medianblurimg)
-	#将灰度图通过一个阈值分割,进行二值化:
-	#小于70置为255白,大于70置为0黑
+	# ngưỡng màu nếu vượt quá 70 thành 0
 	ret,bsrc = cv.threshold(graysrc,70,255,1)  
 	cv.imshow('source',bsrc)
 	cv.imwrite('embedfinger.jpg',bsrc,
 		[int(cv.IMWRITE_JPEG_QUALITY),100])
 
-	#宿主图片
+	#Lưu trữ ảnh
 	host=cv.imread(host_image)  
-	#宿主图片YUV化
+	#Lưu ảnh gốc từ RGB sang YUV
 	hostyuv=cv.cvtColor(host,cv.COLOR_RGB2YUV)  
-	#转成float32是DCT必要条件
+	#Chuyển đổi giá trị ảnh sang float 32
 	hostf=hostyuv.astype('float32')
 
-	#嵌入过程
-	#目标完成图
+	#Quá trình nhúng thủy vân
+	#Hoàn thành nhúng
 	finishwm=hostf
-	#目标完成的8x8划分观察图
-	#发现如果wmblocks=hostf,那么修改wmblocks等于修改hostf,这说明这两是指针,这里指向图像的变量都是指针
+	#mục tiêu hoàn thành phân chia khối 8x8
+	#Nếu wmblocks=hostf,sau đó sửa đổi wmblocks sẽ sửa hostf,ở đây có 2 con trỏ, các biến trỏ đến hình ảnh là con trỏ
 	wmblocks=np.zeros([hostf.shape[0],hostf.shape[1],3],np.float32)
 	wmblocks[:,:,:]=hostf[:,:,:]
-	#8x8块作为单位而拼成的矩阵的行数,列数
+	# số hàng cột của ma trận được tạo thành khối 8x8
 	part8x8rownum=int(host.shape[0]/8)
 	part8x8colnum=int(host.shape[1]/8)
-	#指纹像素点总数
+	# Tổng số điểm ảnh thủy vân
 	fingernum=bsrc.shape[0]*bsrc.shape[1]
-	#r是每个8x8块要存的指纹像素点数目
-	# r=math.ceil(fingernum/(part8x8rownum*part8x8colnum))
+	# r là số lượng điểm ảnh thủy vân được lưu trữ trong mỗi khối 8x8
 	r=math.ceil(fingernum/(part8x8rownum*part8x8colnum))
 	# print("r=",r)
 	#在8x8块的单位格子,分别与其中心的对称的单位格子,成一对
@@ -57,7 +54,7 @@ def embed(srcs,host_image):
 		for partj in range(part8x8colnum):
 			if (flag):
 				break
-			#8x8块进行DCT
+			#chia ảnh thành các khối 8x8 rồi DCT
 			part8x8=cv.dct(hostf[8*parti:8*parti+8,8*partj:8*partj+8,0])
 			#不考虑不够8x8大小的块
 			if (part8x8.shape[0]<8)|(part8x8.shape[1]<8):
@@ -109,8 +106,7 @@ def embed(srcs,host_image):
 	# print("countembed=",count)
 from gooey import Gooey, GooeyParser
 import argparse
-@Gooey(progress_regex=r"^progress: (?P<current>\d+)/(?P<total>\d+)$",
-       progress_expr="current / total * 100")
+@Gooey(program_name='THỦY VÂN SỐ DỰA TRÊN KỸ THUẬT DCT',)
 def main():
 	parser = GooeyParser(description= 'Thủy vân ảnh số dựa trên kỹ thuật DCT - Nguyễn Văn Trung - D9DTVT')
 	parser.add_argument('-f', '--watermark-image',help= 'Thủy vân cần nhúng', default='fingerprint.jpg',widget='FileChooser')
