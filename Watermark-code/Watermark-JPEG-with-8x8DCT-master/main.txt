@@ -1,1 +1,1 @@
-@py.exe C:\Users\Admin\Desktop\watermark_code\Watermark code\Watermark-JPEG-with-8x8DCT-master\control.py %*
+@python.exe C:\Users\Admin\Desktop\watermark_code\Watermark-code\Watermark-JPEG-with-8x8DCT-master\control.py %*
