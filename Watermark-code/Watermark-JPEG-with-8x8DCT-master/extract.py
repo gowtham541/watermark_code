@@ -68,7 +68,7 @@ def extract(src,dst,host_image):
 			host_part8x8= cv.dct(hostf[8*parti:8*parti+8,8*partj:8*partj+8,0])
 			if (part8x8.shape[0]<8)|(part8x8.shape[1]<8):
 				continue
-			for i in range(0,3):
+			for i in range(3):
 				for j in range(3,6):
 					if x == 230:
 						break

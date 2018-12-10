@@ -144,7 +144,7 @@ def embed(srcs,host_image):
 	print('fingernum=', fingernum)
 	imf = np.float32(bsrc)/255.0  # float conversion/scale
 	dct_bsrc = cv.dct(imf)
-	idct_bsrc = cv.idct(dct_bsrc)*255.0
+	# idct_bsrc = cv.idct(dct_bsrc)*255.0
 	# print('bsrc = ',bsrc)
 	# print('dct =' ,dct_bsrc)
 	# print('idct = ',idct_bsrc)
