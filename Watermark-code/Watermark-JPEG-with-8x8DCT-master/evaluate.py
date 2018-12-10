@@ -12,12 +12,13 @@ def psnr(src,dst):
 	psnr=20*math.log10(255/sqrtmse)
 	return psnr
 def main():
-	src='fingerprint.jpg'
+	src='embedfinger.jpg'
 	src_img ='host.jpg'
 	for x in range(6):
+		print("-----Image Quality = "+str(100-2*x)+'%-----')
 		name=str(x)+"extractfinger"+".jpg"
-		print(x,"PSNR_watermark=",'%.3f'%psnr(src,name))
+		print(str(x)+". PSNR_watermark_image_after_extract = ",'%.3f'%psnr(src,name))
 		name_img = "finishwm"+str(x)+".jpg"
-		print(x,"PSNR_image=",'%.3f'%psnr(src_img,name_img))
-if __name__ == '__mai__':
+		print(str(x),". PSNR_host_image_after_extract=",'%.3f'%psnr(src_img,name_img))
+if __name__ == '__main__':
 	main()

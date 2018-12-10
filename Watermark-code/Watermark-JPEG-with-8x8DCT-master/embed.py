@@ -115,8 +115,6 @@ def embed(srcs,host_image):
 	#chuyển ảnh thành rgb thành gray
 	graysrc=cv.cvtColor(src,cv.COLOR_BGR2GRAY)  
 	# cv.imshow('graysrc',graysrc)
-	# Lọc trung bình
-	medianblurimg=cv.medianBlur(graysrc,3)
 	# ngưỡng màu nếu vượt quá 70 thành 0
 	ret,bsrc = cv.threshold(graysrc,70,255,1)  
 	cv.imshow('source',bsrc)
@@ -144,37 +142,27 @@ def embed(srcs,host_image):
 	# Tổng số điểm ảnh thủy vân
 	fingernum=bsrc.shape[0]*bsrc.shape[1]
 	print('fingernum=', fingernum)
-	# r là số lượng điểm ảnh thủy vân được lưu trữ trong mỗi khối 8x8
-	r=math.ceil(fingernum/(part8x8rownum*part8x8colnum))
-	xydict=walk.findpoint((3,4,-1),r)
-	flag=0
-	# print(bsrc)
 	imf = np.float32(bsrc)/255.0  # float conversion/scale
 	dct_bsrc = cv.dct(imf)
 	idct_bsrc = cv.idct(dct_bsrc)*255.0
-	print('bsrc = ',bsrc)
-	print('dct =' ,dct_bsrc)
-	print('idct = ',idct_bsrc)
+	# print('bsrc = ',bsrc)
+	# print('dct =' ,dct_bsrc)
+	# print('idct = ',idct_bsrc)
 	x,y = 0,0
 	beta = 0.01
 	for parti in range(part8x8rownum):
-		if (flag):
-			break
 		for partj in range(part8x8colnum):
-			if (flag):
-				break
 			part8x8=cv.dct(hostf[8*parti:8*parti+8,8*partj:8*partj+8,0])
 			if (part8x8.shape[0]<8)|(part8x8.shape[1]<8):
 				continue
+			#-------- bắt đầu thực hiện nhúng Watermark-----------------#
 			for i in range(3):
 				for j in range(3,6):
 					if x == 230:
 						break
 					else:
-						# print('dct_bsrc[x,y]= ',dct_bsrc[x,y])
 						part8x8[i,j] +=beta*dct_bsrc[x,y]
 						y+=1
-						# print('part8x8= ',part8x8[i,j])
 						if y == dct_bsrc.shape[1]:
 							y=0	
 							x+=1			
@@ -193,7 +181,7 @@ def embed(srcs,host_image):
 	for x in range(6):
 		name="finishwm"+str(x)
 		filename=name+".jpg"
-		cv.imwrite(filename,wmrgb,[int(cv.IMWRITE_JPEG_QUALITY),100-x])
+		cv.imwrite(filename,wmrgb,[int(cv.IMWRITE_JPEG_QUALITY),100-2*x])
 		img=cv.imread(filename)
 		cv.namedWindow(name,0)	
 		k=480

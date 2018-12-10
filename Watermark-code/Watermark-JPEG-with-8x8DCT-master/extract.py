@@ -46,7 +46,7 @@ def extract(src,dst,host_image):
 	hostyuv=cv.cvtColor(host,cv.COLOR_RGB2YUV)  
 	#Chuyển đổi giá trị ảnh sang float 32
 	hostf=hostyuv.astype('float32')
-	###
+	
 	# print('host= ',hostf.shape)
 	wmrgb=cv.imread(src)
 	wmyuv=cv.cvtColor(wmrgb,cv.COLOR_RGB2YUV) 
@@ -73,6 +73,7 @@ def extract(src,dst,host_image):
 					if x == 230:
 						break
 					else:
+						# print('part8x8[i,j] = ',part8x8[i,j])
 						finishfinger[x,y] = (part8x8[i,j]- host_part8x8[i,j])/beta
 						# print('part8x8= ',part8x8[i,j])
 						# print('host_part8x8 = ',host_part8x8[i,j])
@@ -84,11 +85,17 @@ def extract(src,dst,host_image):
 	 # float conversion/scale
 	# dct_bsrc = cv.dct(imf)
 	# finishfinger = cv.idct(imf)*255.0
-	finishfinger = cv.idct(finishfinger)
+	finishfinger = (cv.idct(finishfinger))
+	for i in range(finishfinger.shape[0]):
+		for j in range(finishfinger.shape[1]):
+			if abs(finishfinger[i,j])>128:
+				finishfinger[i,j]= abs(finishfinger[i,j])
+			else:
+				finishfinger[i,j] = 0
+	# finishfinger= abs(finishfinger)
 	# finishfinger = np.uint8(dct_bsrc)*255.0 
-	print('finishfinger= ',finishfinger )
+	# print('finishfinger= ',finishfinger )
 	# print('finishfinger=  ',finishfinger.shape)
-	# finishfinger[8*parti:8*parti+8,8*partj:8*partj+8]=cv.idct(imf)*255.0
 	# print("countextract=",count)
 	cv.imwrite(dst,(finishfinger),[int(cv.IMWRITE_JPEG_QUALITY),100])
 def main():
@@ -96,6 +103,7 @@ def main():
 		host_image = 'host.jpg'
 		wmname="finishwm"+str(x)
 		exname=str(x)+"extractfinger"
+		# extract(wmname+".jpg",exname+".jpg")# thuật toán của tác giả
 		extract(wmname+".jpg",exname+".jpg",host_image)
 		img=cv.imread(exname+".jpg")
 		cv.namedWindow(exname,0)	
